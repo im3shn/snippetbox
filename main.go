@@ -9,12 +9,20 @@ func home(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte("Hello from snippet box"))
 }
 
+func createSnippet(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("A form for writing snippet"))
+}
+
+func viewSnippet(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Displaying snippetbox"))
+}
+
 func main() {
-    mux := http.NewServeMux()
-    mux.HandleFunc("/", home)
-    
-    log.Print("Starting server on :4000")
-    
-    err := http.ListenAndServe(":4000", mux)
-    log.Fatal(err)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", home)
+
+	log.Print("Starting server on :4000")
+
+	err := http.ListenAndServe(":4000", mux)
+	log.Fatal(err)
 }
