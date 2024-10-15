@@ -1,0 +1,2 @@
+{"time":"2024-10-15T15:44:14.50646853+05:30","level":"INFO","source":{"function":"main.main","file":"/home/im3shn/projects/snippetbox/cmd/web/main.go","line":30},"msg":"starting server","addr":":4000"}
+{"time":"2024-10-15T15:44:14.506755079+05:30","level":"ERROR","source":{"function":"main.main","file":"/home/im3shn/projects/snippetbox/cmd/web/main.go","line":33},"msg":"listen tcp :4000: bind: address already in use"}
