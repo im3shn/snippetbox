@@ -14,9 +14,9 @@ import (
 )
 
 type application struct {
-	logger   *slog.Logger
-	snippets *models.SnippetModel
-    templateCache map[string]*template.Template
+	logger        *slog.Logger
+	snippets      *models.SnippetModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -41,18 +41,18 @@ func main() {
 	}
 	defer db.Close()
 
-    templateCache, err := newTemplateCache()
-    if err != nil {
-        logger.Error(err.Error())
-        os.Exit(1)
-    }
+	templateCache, err := newTemplateCache()
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
 
 	app := &application{
 		logger: logger,
 		snippets: &models.SnippetModel{
 			DB: db,
 		},
-        templateCache: templateCache,
+		templateCache: templateCache,
 	}
 
 	app.logger.Info("starting server", slog.Any("addr", *addr))
