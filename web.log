@@ -1,1 +1,1 @@
-{"time":"2024-10-15T17:17:42.86951432+05:30","level":"INFO","source":{"function":"main.main","file":"/home/im3shn/projects/snippetbox/cmd/web/main.go","line":38},"msg":"starting server","addr":":4000"}
+{"time":"2024-10-16T20:49:38.064303569+05:30","level":"INFO","source":{"function":"main.main","file":"/home/im3shn/projects/snippetbox/cmd/web/main.go","line":49},"msg":"starting server","addr":":4000"}
