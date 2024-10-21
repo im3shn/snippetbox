@@ -51,16 +51,27 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
     app.render(w, r, http.StatusOK, "create.tmpl.html", data)
 }
 
-func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
-	title := "O Snail"
-	content := "O Snail \nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
-	expires := 7
+func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request){
+    err := r.ParseForm()
+    if err != nil {
+        app.clientError(w, http.StatusBadRequest)
+        return
+    }
 
-	id, err := app.snippets.Insert(title, content, expires)
+    title := r.PostForm.Get("title")
+    content := r.PostForm.Get("content")
 
-	if err != nil {
-		app.serverError(w, r, err)
-	}
+    expires, err := strconv.Atoi(r.PostForm.Get("expires"))
+    if err != nil {
+        app.clientError(w, http.StatusBadRequest)
+        return
+    }
 
-	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
-}
+    id, err := app.snippets.Insert(title, content, expires)
+    if err != nil {
+        app.serverError(w, r, err)
+        return
+    }
+
+    http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
+} 
