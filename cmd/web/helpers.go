@@ -57,7 +57,6 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, status in
 		return
 	}
 
-    w.Header().Set("Content-Length", "this isn't an integer!")
 	w.WriteHeader(status)
 	_, err = buf.WriteTo(w)
 	if err != nil {
