@@ -163,12 +163,77 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 }
 
+type userLoginForm struct {
+	Email    string
+	Password string
+	validator.Validator
+}
+
 func (app *application) userLogin(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Form for logging in a user")
+	data := app.newTemplateData(r)
+	data.Form = userLoginForm{}
+	app.render(w, r, http.StatusOK, "login.tmpl.html", data)
 }
 
 func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Authenticate and Login a new user")
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	form := userLoginForm{
+		Email:    r.PostForm.Get("email"),
+		Password: r.PostForm.Get("password"),
+	}
+
+	form.CheckField(
+		validator.NotBlank(form.Email),
+		"email",
+		"This field cannot be blank",
+	)
+	form.CheckField(
+		validator.Matches(form.Email, validator.EmailRx),
+		"email",
+		"This is not a valid email",
+	)
+	form.CheckField(
+		validator.NotBlank(form.Password),
+		"password",
+		"This field cannot be blank",
+	)
+
+	if !form.Valid() {
+		data := app.newTemplateData(r)
+		data.Form = form
+		app.render(w, r, http.StatusUnprocessableEntity, "login.tmpl.html", data)
+		return
+	}
+
+	id, err := app.users.Authenticate(form.Email, form.Password)
+	if err != nil {
+		if errors.Is(err, models.ErrInvalidCredentials) {
+			form.AddNonFieldErrors("Email or password is invalid")
+
+			data := app.newTemplateData(r)
+			data.Form = form
+
+			app.render(w, r, http.StatusUnprocessableEntity, "login.tmpl.html", data)
+		} else {
+			app.serverError(w, r, err)
+		}
+		return
+	}
+
+	err = app.sessionManager.RenewToken(r.Context())
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	app.sessionManager.Put(r.Context(), "authenticationId", id)
+	app.sessionManager.Put(r.Context(), "flash", "Logged In Successfully")
+	http.Redirect(w, r, "/snippet/create", http.StatusSeeOther)
 }
 
 func (app *application) userLogoutPost(w http.ResponseWriter, r *http.Request) {
