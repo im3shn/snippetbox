@@ -1,7 +1,7 @@
-package validator 
+package validator
 
 import (
-    "regexp"
+	"regexp"
 	"slices"
 	"strings"
 	"unicode/utf8"
@@ -46,9 +46,9 @@ func PermittedValue[T comparable](value T, permittedValues ...T) bool {
 }
 
 func MinChars(value string, n int) bool {
-    return utf8.RuneCountInString(value) >= n
+	return utf8.RuneCountInString(value) >= n
 }
 
 func Matches(value string, rx *regexp.Regexp) bool {
-    return rx.MatchString(value)
+	return rx.MatchString(value)
 }
