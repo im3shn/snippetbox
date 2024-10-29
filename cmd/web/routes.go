@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-    "im3shn/snippetbox/ui"
+	"im3shn/snippetbox/ui"
 
 	"github.com/justinas/alice"
 )
